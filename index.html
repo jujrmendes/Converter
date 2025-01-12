@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,11 +20,11 @@
     <img src="./assets/logo.svg" alt="Convert logo" />
 
     <main>
-      <form>
-        <label for="amount">valor</label>
-        <input type="text" name="amount" id="amount" placeholder="0" required />
+      <form id="currency-form">
+        <label for="amount">Valor</label>
+        <input type="number" name="amount" id="amount" placeholder="0" required />
 
-        <label for="currency">moeda</label>
+        <label for="currency">Moeda</label>
         <select name="currency" id="currency" required>
           <option value="" disabled selected hidden>Selecione a moeda</option>
           <option value="USD">Dólar Americano</option>
@@ -35,14 +35,49 @@
         <button type="submit">Converter em reais</button>
       </form>
 
-      <footer>
-        <span id="description">US$ 1 = R$ 4,86</span>
-        <h1 id="result">486,00 Reais</h1>
+      <footer id="main-footer">
+        <span id="description">1 USD = R$ 5,35</span>
+        <h1 id="result">535,00 Reais</h1>
       </footer>
     </main>
 
-    <script> src="scripts.js"</script>
+    <script>
+      document.querySelector("#currency-form").addEventListener("submit", (event) => {
+        event.preventDefault(); // Evita o recarregamento da página
 
+        const amount = parseFloat(document.getElementById("amount").value); // Valor digitado
+        const currency = document.getElementById("currency").value; // Moeda selecionada
 
+        if (isNaN(amount) || !currency) {
+          alert("Por favor, insira um valor válido e selecione uma moeda.");
+          return;
+        }
+
+        // Taxas de câmbio fixas para as moedas selecionadas
+        const exchangeRates = {
+          USD: 5.35, // Dólar para Real
+          EUR: 5.66, // Euro para Real
+          GBP: 6.66, // Libra Esterlina para Real
+        };
+
+        // Verificando se a moeda selecionada existe na tabela de taxas
+        const rate = exchangeRates[currency];
+
+        if (!rate) {
+          alert("Não foi possível obter a taxa de câmbio.");
+          return;
+        }
+
+        // Calcula o valor convertido
+        const convertedAmount = (amount * rate).toFixed(2);
+
+        // Atualiza os elementos na interface
+        document.getElementById("description").textContent = `1 ${currency} = R$ ${rate.toFixed(2)}`;
+        document.getElementById("result").textContent = `${convertedAmount} Reais`;
+
+        // Exibe o footer com o resultado
+        document.querySelector("footer").classList.add("show-result");
+      });
+    </script>
   </body>
 </html>
